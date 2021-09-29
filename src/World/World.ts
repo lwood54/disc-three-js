@@ -27,16 +27,15 @@ class World {
 
     this.loop = new Loop(this.camera, this.scene, this.renderer);
     container.append(this.renderer.domElement);
-    createControls(this.camera, this.renderer.domElement);
-    // const controls = createControls(this.camera, this.renderer.domElement);
+    const controls = createControls(this.camera, this.renderer.domElement);
 
     const cube = createCube();
-    const light = createLights();
-    const helper = new DirectionalLightHelper(light, 5);
+    const { mainLight, ambientLight } = createLights();
+    const helper = new DirectionalLightHelper(mainLight, 5);
 
-    this.loop.updatables.push(cube, this.camera, light);
+    this.loop.updatables.push(cube, this.camera, mainLight, controls);
 
-    this.scene.add(cube, light, helper);
+    this.scene.add(ambientLight, cube, mainLight, helper);
 
     new Resizer(container, this.camera, this.renderer);
     // const resizer = new Resizer(container, camera, renderer);
