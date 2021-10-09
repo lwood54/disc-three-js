@@ -27,7 +27,7 @@ function createMeshGroup() {
   }
 
   const radiansPerSecond = MathUtils.degToRad(30);
-  group.tick = (delta) => {
+  group.tick = (delta: number) => {
     group.rotation.z -= delta * radiansPerSecond;
   };
   group.scale.multiplyScalar(2);
