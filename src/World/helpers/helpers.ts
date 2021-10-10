@@ -1,7 +1,7 @@
 import { AxesHelper, GridHelper } from "three";
 
 function createAxesHelper() {
-  const helper = new AxesHelper(3);
+  const helper = new AxesHelper();
   helper.position.set(-3.5, 0, -3.5);
   return helper;
 }

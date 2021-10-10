@@ -3,8 +3,9 @@ import { createScene } from "./components/scene";
 import { createLights } from "./components/lights";
 import { createAxesHelper, createGridHelper } from "./helpers";
 import { Train } from "./components/Train/Train";
+import { loadBirds } from "./components/birds/birds";
 
-import { createControls } from "./systems/controls";
+import { createControls, CustomOrbitControls } from "./systems/controls";
 import { createRenderer } from "./systems/renderer";
 import { Resizer } from "./systems/Resizer";
 import { Loop } from "./systems/Loop";
@@ -20,22 +21,23 @@ class World {
   readonly renderer: WebGLRenderer;
   readonly scene: Scene;
   readonly loop: Loop;
+  readonly controls: CustomOrbitControls;
 
   constructor(container: HTMLElement) {
     this.camera = createCamera();
     this.scene = createScene();
     this.renderer = createRenderer();
+    this.controls = createControls(this.camera, this.renderer.domElement);
 
     this.loop = new Loop(this.camera, this.scene, this.renderer);
     container.append(this.renderer.domElement);
-    const controls = createControls(this.camera, this.renderer.domElement);
 
     const train = new Train();
 
     const { mainLight, ambientLight } = createLights();
     const directionalLightHelper = new DirectionalLightHelper(mainLight, 5);
 
-    this.loop.updatables.push(train, this.camera, mainLight, controls);
+    this.loop.updatables.push(train, this.camera, mainLight, this.controls);
 
     this.scene.add(
       ambientLight,
@@ -48,6 +50,12 @@ class World {
 
     new Resizer(container, this.camera, this.renderer);
     // const resizer = new Resizer(container, camera, renderer);
+  }
+
+  async init() {
+    const { flamingo, parrot, stork } = await loadBirds();
+    this.controls.target.copy(parrot.position);
+    this.scene.add(flamingo, parrot, stork);
   }
 
   render() {
